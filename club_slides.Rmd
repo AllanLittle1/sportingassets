@@ -1,0 +1,214 @@
+---
+title: "`r params$club_name` Social Value Report"
+subtitle: "Powered by Value FC"
+output: 
+  powerpoint_presentation:
+    reference_doc: slide_template.pptx
+    slide_level: 2
+params:
+  club_name: NULL
+  sroi: NULL
+  return: NULL
+  investment: NULL
+  net_value: NULL
+  wellby_adult: NULL
+  wellby_youth: NULL
+  wellby_volunteer: NULL
+  replacement_value: NULL
+  annual_expenditure: NULL
+  adult_players: NULL
+  youth_players: NULL
+  volunteers: NULL
+  economic_value: NULL
+  player_spending: NULL
+  health_value: NULL
+  health_ratio: NULL
+  wellby_val: NULL
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(ggplot2)
+library(scales)
+
+# Helper function for formatting large numbers
+format_large <- function(x) {
+  if(is.null(x)) return("0")
+  format(round(x), big.mark = ",", scientific = FALSE)
+}
+
+# Safe calculations with NULL checks
+safe_sum <- function(...) {
+  values <- c(...)
+  if(all(sapply(values, is.null))) return(0)
+  sum(sapply(values, function(x) if(is.null(x)) 0 else x))
+}
+
+# Calculate totals
+total_wellbeing <- safe_sum(params$wellby_adult, params$wellby_youth, params$wellby_volunteer)
+
+# Sensitivity calculations
+safe_return <- if(is.null(params$return) || params$return == 0) 1 else params$return
+wellbeing_proportion <- total_wellbeing/safe_return
+base_sroi <- if(is.null(params$sroi)) 0 else params$sroi
+
+# Calculate ranges
+combined_low <- base_sroi * (40/60)
+combined_high <- base_sroi * (80/60)
+
+# Essex FA colors
+efa_colors <- c("#124487", "#CE3231", "#C6A35C")
+```
+
+## We're Not Just Running a Club...
+### We're Building a Community
+
+- `r params$club_name` generates **£`r sprintf("%.2f", base_sroi)`** in social value for every £1 invested
+- Total annual benefits: **£`r format_large(params$return)`**
+- Net social value: **£`r format_large(params$net_value)`**
+- While no social values are precise, our return could range from £`r sprintf("%.2f", combined_low)` to £`r sprintf("%.2f", combined_high)` per £1
+
+## Our Annual Benefits: £`r format_large(params$return)`
+
+```{r benefits-chart}
+benefits <- data.frame(
+  Category = factor(
+    c("Wellbeing Benefits", "Health System Benefits", "Economic Value"),
+    levels = c("Wellbeing Benefits", "Health System Benefits", "Economic Value")
+  ),
+  Value = as.numeric(c(
+    total_wellbeing,
+    ifelse(is.null(params$health_value), 0, params$health_value),
+    ifelse(is.null(params$economic_value), 0, params$economic_value)
+  ))
+)
+
+ggplot(benefits, aes(x = Category, y = Value, fill = Category)) +
+  geom_col() +
+  geom_text(aes(label = scales::dollar(Value, prefix = "£")), vjust = -0.5) +
+  theme_minimal() +
+  labs(x = "", y = "Value (£)") +
+  theme(
+    legend.position = "none",
+    text = element_text(family = "Arial"),
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    panel.grid.major.y = element_blank()
+  ) +
+  scale_fill_manual(values = efa_colors) +
+  scale_y_continuous(labels = scales::dollar_format(prefix = "£"))
+```
+
+## Our Investment: £`r format_large(params$investment)`
+
+```{r investment-chart}
+investment <- data.frame(
+  Category = factor(
+    c("Club Costs", "Player Spending", "Volunteer Time"),
+    levels = c("Club Costs", "Player Spending", "Volunteer Time")
+  ),
+  Value = as.numeric(c(
+    ifelse(is.null(params$annual_expenditure), 0, params$annual_expenditure),
+    ifelse(is.null(params$player_spending), 0, params$player_spending),
+    ifelse(is.null(params$replacement_value), 0, params$replacement_value)
+  ))
+)
+
+ggplot(investment, aes(x = Category, y = Value, fill = Category)) +
+  geom_col() +
+  geom_text(aes(label = scales::dollar(Value, prefix = "£")), vjust = -0.5) +
+  theme_minimal() +
+  labs(x = "", y = "Value (£)") +
+  theme(
+    legend.position = "none",
+    text = element_text(family = "Arial"),
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    panel.grid.major.y = element_blank()
+  ) +
+  scale_fill_manual(values = efa_colors) +
+  scale_y_continuous(labels = scales::dollar_format(prefix = "£"))
+```
+
+## Our Community
+
+```{r participation-chart}
+participation <- data.frame(
+  Category = factor(
+    c("Adult Players", "Youth Players", "Volunteers"),
+    levels = c("Adult Players", "Youth Players", "Volunteers")
+  ),
+  Count = as.numeric(c(
+    ifelse(is.null(params$adult_players), 0, params$adult_players),
+    ifelse(is.null(params$youth_players), 0, params$youth_players),
+    ifelse(is.null(params$volunteers), 0, params$volunteers)
+  ))
+)
+
+ggplot(participation, aes(x = Category, y = Count, fill = Category)) +
+  geom_col() +
+  geom_text(aes(label = Count), vjust = -0.5) +
+  theme_minimal() +
+  labs(x = "", y = "Number of People") +
+  theme(
+    legend.position = "none",
+    text = element_text(family = "Arial"),
+    panel.grid.major.y = element_blank()
+  ) +
+  scale_fill_manual(values = efa_colors)
+```
+
+## Understanding Wellbeing Benefits
+
+The Treasury values a one-point improvement in life satisfaction over a year at £`r format_large(params$wellby_val)`:
+
+Our annual wellbeing gains:
+- Adult players (0.093 WELLBYs each): £1,419 per player
+- Youth players (0.371 WELLBYs each): £5,661 per player
+- Volunteers (0.066 WELLBYs each): £1,007 per volunteer
+
+Total wellbeing value: **£`r format_large(total_wellbeing)`**
+
+## Health System Benefits
+
+Active adults reduce pressure on the NHS through:
+- Lower risk of major health conditions
+- Reduced GP and mental health service demand
+- Improved cardiovascular health
+
+**Total Health System Benefits: £`r format_large(params$health_value)`**
+
+Based on Sport England's 2024 model: every £2,500 in wellbeing benefits generates £315 in NHS savings.
+
+## Economic Benefits
+
+Our spending supports local jobs and businesses:
+- Club expenditure: £`r format_large(params$annual_expenditure)`
+- Player spending: £`r format_large(params$player_spending)`
+
+**Total Economic Value: £`r format_large(params$economic_value)`**
+
+About 54p in every £1 spent creates economic value through jobs and business income.
+
+## Being Realistic
+
+We're careful not to over-claim:
+- Benefits adjusted down by 40%
+- Use conservative assumptions
+- Account for what might happen without our club
+- Based on national averages
+- Follow Treasury guidelines
+
+## Support `r params$club_name`
+
+- Volunteer with us - join our `r format_large(params$volunteers)` amazing volunteers
+- Attend our matches and events
+- Help us grow our `r format_large(safe_sum(params$adult_players, params$youth_players))` regular players
+- Consider sponsoring or donating
+
+Together, we're building a healthier, happier community.
+
+## Thank You
+
+![](www/stateoflife.png){width=30%} ![](www/essex_fa.png){width=30%}
+
+Value FC tool developed by State of Life for Essex FA
+Following HM Treasury guidelines

@@ -1,0 +1,179 @@
+To make the content more efficient for an LLM to access, read, and use for training and user responses, we should structure the information in a clear, concise, and indexed format. This involves organizing the sections by topic, using bullet points for clarity, and providing explicit headings for easy navigation. Here’s a restructured version:
+
+### Adjustments for Inflation
+
+#### Overview
+- Costs and benefits should be estimated in ‘real’ base year prices.
+- General inflation effects should be removed using the GDP deflator.
+
+#### Methods for Adjusting Prices
+- **Short Time Horizons**: Use whole economy inflation (GDP deflator) from the most recent OBR forecasts.
+- **Long Time Horizons**: Use GDP deflator forecasts from the OBR Fiscal Sustainability Report (FSR).
+- **Beyond FSR**: Extrapolate GDP deflator using the growth rate in the final year of the OBR’s projection.
+
+#### Table: Adjusting for the Effects of Inflation (2% GDP Deflator)
+| Year   | 0    | 1    | 2    | 3    | 4    | 5    |
+|--------|------|------|------|------|------|------|
+| Nominal terms (£) | 1,000 | 1,000 | 1,000 | 1,000 | 1,000 | 1,000 |
+| Real terms (£)    | 1,000 | 980  | 961  | 942  | 924  | 906  |
+
+#### Relative Price Effect
+- **Concept**: Specific price index movements may differ from general inflation.
+- **Application**: Use historical evidence and future expectations to apply different inflation rates. 
+  - Example: Information Technology prices decrease over time, land prices increase.
+- **Requirements**: Assumptions must be based on objective evidence and clearly stated in the business case.
+
+### Discounting and Social Time Preference
+
+#### Overview
+- **Purpose**: Compare costs and benefits over different time periods consistently.
+- **Basis**: Time preference; people prefer goods/services sooner rather than later.
+
+#### Components of STPR
+- **Time Preference**: Rate at which consumption and public spending are discounted, assuming no per capita consumption change.
+- **Wealth Effect**: Reflects expected growth in per capita consumption over time.
+
+#### Standard Discount Rates
+- **General**: 3.5% in real terms.
+- **Risk to Life Values**: 1.5%.
+- **Declining Rates for Long-Term**: Steps down over 30+ years due to future uncertainty.
+
+#### Table: Present Values and Discount Rate (3.5% Rate)
+| Year   | 0    | 1    | 2    | 3    | 4    | 5    | 6    | 7    | 8    | 9    | 10   |
+|--------|------|------|------|------|------|------|------|------|------|------|------|
+| Value (£) | 1,000 | 966  | 934  | 902  | 871  | 842  | 814  | 786  | 759  | 734  | 709  |
+
+#### Practical Application
+- **Inflation and Discounting**: Separate adjustments; first convert to real prices, then apply discounting.
+- **Never Retrospective**: Do not apply discounting to past costs/benefits.
+- **Government Funds**: STPR is not linked to costs of raising funds.
+
+### Box 15: NPSV and Discounting Example
+- **Option A**: Initial cost £10m, annual benefit £2.5m for 4 years.
+  - NPSV: -£0.82m
+- **Option B**: Initial cost £5m, annual benefit £1.5m for 4 years.
+  - NPSV: £0.51m
+
+#### Discount Factors Example
+| Year   | 0      | 1      | 2      | 3      | 4      |
+|--------|--------|--------|--------|--------|--------|
+| Factor | 1      | 0.9662 | 0.9335 | 0.9019 | 0.8714 |
+
+### Glossary
+- **Additionality**: Real increase in social value not occurring without the intervention.
+- **Adverse Selection**: Quality restriction due to asymmetric information.
+- **Affordability**: Assessment of public sector intervention costs.
+- **Agglomeration Benefits**: Benefits from firms/people clustering geographically.
+- **Appraisal**: Process of defining objectives, examining options, and weighing costs/benefits.
+- **Benefits Externalities**: Benefits not reflected in market price.
+- **Business As Usual**: Current arrangements without the intervention.
+- **Contingency Provision**: Reflects risk costs and optimism bias in nominal prices.
+- **Contingent Valuation**: Stated preference valuation asking WTP for goods/services.
+- **Cost Externalities**: Costs not reflected in market price.
+- **Cost of Capital**: Annual percentage rate for raising funds.
+- **Deadweight**: Outcomes occurring without the intervention.
+- **Diminishing Marginal Utility**: Satisfaction from additional units diminishes with more consumption.
+- **Discounting**: Converts future values to present value based on time preference.
+- **Discount Rate**: Annual rate decreasing future values over time.
+- **Displacement**: Increase in activity offset by reductions elsewhere.
+- **Do-Minimum Option**: Minimum intervention to meet core needs.
+- **Effectiveness**: Measure of intervention achieving objectives.
+- **Evaluation**: Systematic assessment of intervention design, implementation, and outcomes.
+- **Expected Value**: Risk product and probability of occurrence.
+- **Externalities**: Costs/benefits affecting others not involved in consumption/production.
+- **GDP Deflator**: Index of general price level in the economy.
+- **Gold Plating**: Adding features with little value but high cost.
+- **Hedonic Pricing**: Valuation using data from related markets.
+- **Information Asymmetry**: Unequal information in transactions.
+- **Intervention**: Proposed policy, programme, or project under appraisal.
+- **Implementation**: Activities to deliver intervention post-approval.
+- **Irreversibility**: Significant changes that cannot be undone.
+- **Leakage**: Effects leaking out of target area.
+- **Longlist**: Initial set of option choices before shortlisting.
+- **Market Failure**: Market unable to function fairly for welfare efficiency.
+- **Market Value**: Price determined by buyers/sellers interaction.
+- **Marginal Utility**: Satisfaction change from consumption change.
+- **Monte Carlo Analysis**: Simulation-based risk modelling technique.
+- **Moral Hazard**: Behaviour change due to risk protection.
+- **Multi-Criteria Decision Analysis**: Technique for dealing with complex values.
+- **Net Present Value (NPV)**: Sum of discounted future values.
+- **Net Present Social Value (NPSV)**: Present value of future social costs/benefits.
+- **Nominal Price**: Prices including inflation.
+- **Opportunity Cost**: Best alternative use value of a good/service.
+- **Optimism Bias**: Tendency to be over-optimistic about project parameters.
+- **Options Framework**: Process reducing longlist to shortlist through strategic choices.
+- **Outcome**: Consequences to society of public service change.
+- **Output**: Change in level/quality of public service.
+- **Policy**: Statement of intent, implemented as procedure/protocol.
+- **Portfolio**: Collection of programmes/projects for strategic benefits/efficiency.
+- **Portfolio Management**: Selection/prioritisation/control of programmes/projects.
+- **PPP**: Public Private Partnership in various forms.
+- **Precautionary Principle**: Justified action despite low risk probability.
+- **Preferred Option**: Best option for public value delivery post-analysis.
+- **Preferred Way Forward**: Likely option to deliver objectives pre-shortlisting.
+- **Price Index**: Measure of price levels over time.
+- **Programme**: Series of measures/events/activities for long-term objectives.
+- **Project**: Temporary organisation for specific predefined output.
+- **Proposal**: Policy, programme, or project under appraisal.
+- **Prosperity**: Level of social value.
+- **Public Sector Comparator**: Direct public provision option for PPP comparison.
+- **Real Option Theory**: Benefit of decision delay for flexibility in uncertainty.
+- **Real Price**: Nominal price deflated by general inflation measure.
+- **Real Terms**: Value at specified general price level.
+- **Relative Price Effect**: Specific price index movement relative to general index.
+- **Relevant Costs/Benefits**: Costs/benefits to UK society from proposal.
+- **Resources**: Real goods/services excluding other costs.
+- **Resource Cost**: Economic sense costs excluding transfer payments.
+- **Revealed Preference**: Value inferred from observed actions.
+- **Risks**: Specific uncertainties in proposal design/planning/operation.
+- **Risk Costs**: Costs of avoiding/transferring/mitigating risks.
+- **Risk Register**: Tool recording proposal risks, likelihood, value, management responsibility.
+- **SRO**: Senior Responsible Owner overseeing project/programme.
+- **Sensitivity Analysis**: Exploring intervention outcomes sensitivity to input changes.
+- **Shadow Price**: Estimated value where market prices are unavailable.
+- **Shortlist**: Viable options for detailed appraisal.
+- **Social Benefits**: Benefits to society.
+- **Social Costs**: Costs to society.
+- **Social Cost Benefit Analysis**: Quantifies social welfare effects in monetary terms.
+- **Social Cost-Effectiveness Analysis**: Compares costs of producing similar outputs.
+- **Social
+
+ Time Preference Rate (STPR)**: Value society attaches to present vs. future.
+- **Social Value**: Measure of total social welfare.
+- **Stated Preference**: Technique for eliciting non-marketed values from surveys.
+- **Strategic Portfolio**: Programmes/projects for strategic objective delivery.
+- **Strategy**: Plan of action for achieving objectives.
+- **Substitution**: Labour/factor of production replacement without output increase.
+- **Switching Value**: Key input variable value for intervention to switch from recommended.
+- **Systematic Risk**: Output variation correlated with economy movements.
+- **Transfer Payments**: Transfer of purchasing power not affecting output/consumption.
+- **Value for Money (VfM)**: Balanced judgment based on Benefit Cost Ratio and SMART objectives.
+- **Willingness to Accept**: Value inference from survey on compensation to give up good/service.
+- **Willingness to Pay**: Value inference from survey on payment to acquire good/service.
+
+### Wellbeing Guidance for Appraisal
+
+#### WELLBY value
+
+The value of a WELLBY is £13,000 in 2019 prices
+
+#### Calculating Willingness to Pay (WTP) for Life Satisfaction Changes
+- **Method**: Analysis of ln(income) and life satisfaction.
+  - Coefficient on ln(income): 1.25 (life satisfaction on 1-7 scale).
+  - WELLBY: Aggregation of WTP for gains in life satisfaction.
+- **Formula**: \( WTP_{\text{WELLBY}} = \left[ f'(\ln(M)) \cdot M \right]^{-1} = M^{\beta_Y} \)
+  - \( \beta_Y \): Coefficient on ln(income) on 0-10 scale.
+  - For ln(income) coefficient of 1.25 on 1-7 scale, \( \beta_Y = \frac{11}{7} \cdot 1.25 = 1.96 \).
+- **Calculation**: WTP per WELLBY with average earnings (£30,673 in 2019):
+  - \( WTP_{\text{WELLBY}} = \frac{£30,673}{1.96} = £15,649 \)
+  - Rounded to £16,000.
+- **Central Recommended WELLBY Value**: Mid-point of £10,023 and £15,649.
+  - \( WTP_{\text{WELLBY}} = \frac{10,000 + 16,000}{2} = £13,000 \)
+
+#### Adjusting for Price Year and Discounting
+- **Formula**: 
+  - \( WTP_{\text{WELLBY}_t} = WTP_{\text{WELLBY}_{\text{base}}} \cdot \frac{GDP_{\text{deflator}_t}}{GDP_{\text{deflator}_{\text{base}}}} \cdot \left( \frac{GDP_{\text{per capita}_t}}{GDP_{\text{per capita}_{\text{base}}}} \right)^{1.3} \)
+  - 1.3: Negative of marginal utility of income elasticity.
+- **Discount Rate for Wellbeing**: Green Book ‘health’ discount rate (1.5% for years 0-30, declining thereafter).
+
+This structured format ensures the information is organized logically, making it easier for the LLM to access, read, and use efficiently.

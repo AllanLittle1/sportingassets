@@ -1,0 +1,114 @@
+---
+title: "`r if(!is.null(params$club_name) && nzchar(params$club_name)) paste(params$club_name, 'Media Pack') else 'Club Media Pack'`"
+output: 
+  officedown::rdocx_document:
+    reference_docx: essex_style_reference.docx
+params:
+  club_name: NULL
+  sroi: NULL
+  return: NULL
+  investment: NULL
+  net_value: NULL
+  wellby_adult: NULL
+  wellby_youth: NULL
+  wellby_volunteer: NULL
+  replacement_value: NULL
+  annual_expenditure: NULL
+  adult_players: NULL
+  youth_players: NULL
+  volunteers: NULL
+  economic_value: NULL
+  player_spending: NULL
+  health_value: NULL
+  health_ratio: NULL
+  wellby_val: NULL
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(officer)
+library(flextable)
+
+# Safe number formatting function
+safe_format <- function(x, digits = 0, nsmall = 0) {
+  if(is.null(x)) return("0")
+  format(round(as.numeric(x), digits), big.mark = ",", scientific = FALSE, nsmall = nsmall)
+}
+
+# Calculate sensitivity ranges with NULL checks
+base_sroi <- if(is.null(params$sroi)) 0 else as.numeric(params$sroi)
+wellbeing_total <- sum(c(
+  if(is.null(params$wellby_adult)) 0 else as.numeric(params$wellby_adult),
+  if(is.null(params$wellby_youth)) 0 else as.numeric(params$wellby_youth),
+  if(is.null(params$wellby_volunteer)) 0 else as.numeric(params$wellby_volunteer)
+))
+
+# Combined effects for sensitivity with NULL checks
+total_return <- if(is.null(params$return)) 1 else as.numeric(params$return)  # Use 1 to avoid division by zero
+wellby_component <- base_sroi * (wellbeing_total/total_return)
+other_component <- base_sroi * (1 - wellbeing_total/total_return)
+combined_low <- (wellby_component * 0.769 * 40/60) + (other_component * 40/60)
+combined_high <- (wellby_component * 1.231 * 80/60) + (other_component * 80/60)
+
+# Format club name
+club_name <- if(!is.null(params$club_name) && nzchar(params$club_name)) params$club_name else "Our club"
+```
+
+\
+
+# Press Release
+
+## `r club_name` Scores Big with Social Value
+
+`r format(Sys.Date(), "%d %B %Y")`\
+
+`r club_name` today announced its significant contribution to community wellbeing, as calculated by the Value FC tool developed by State of Life for Essex FA. The club generates an estimated £`r safe_format(params$sroi, 2, 2)` in social value for every £1 invested, demonstrating the substantial impact of grassroots football on local communities.\
+
+[Club representative quote to be added]
+
+\newpage
+
+# Frequently Asked Questions (FAQ)
+
+## Q: What is social value?
+
+We're not just running a football club, we're building a community. Social value means measuring the broader benefits that our club brings to everyone involved - from improved physical and mental health, to stronger community bonds and local economic growth. Value F.C. helps us estimate these benefits in terms that funders understand.\
+
+## Q: How do you measure wellbeing benefits?
+
+We use a simple but powerful question recommended by the Treasury: "Overall, how satisfied are you with your life nowadays?" on a scale from 0-10. If our club helps someone move up one point for a year, that's called a Wellbeing Year (WELLBY), valued at £`r safe_format(params$wellby_val)` in 2023 prices. Our adult players gain 0.093 WELLBYs (worth £1,419) annually, youth players gain 0.371 WELLBYs (£5,661), and volunteers gain 0.066 WELLBYs (£1,007).\
+
+## Q: How reliable are these figures?
+
+We're careful not to over-claim. For example, we adjust all benefits down by 40%, acknowledging that some players might find other ways to stay active without our club. While based on national averages, our estimates use methods approved by HM Treasury and values recommended for government business cases. As a club, we're confident in our input data - our expenditure and participation numbers.\
+
+While no social value estimates are precise, sensitivity analysis suggests our return could range from £`r safe_format(combined_low, 2, 2)` to £`r safe_format(combined_high, 2, 2)` per £1 invested.\
+
+## Q: What other benefits do you measure?
+
+Beyond wellbeing, we estimate:
+
+- Health system benefits: Active adults reduce pressure on the NHS through lower risks of conditions like heart disease
+- Economic value: Our spending supports local jobs and businesses
+- Volunteer contributions: We value our volunteers' time at National Living Wage rates, recognizing their crucial investment in community sport\
+
+## Q: How can I find out more about the club and get involved?
+
+[Recommend club to add specific ways for people to get involved or support]
+
+\
+
+# Key Messages
+
+- We're not just running a football club, we're building a community
+- Our £`r safe_format(params$sroi, 2, 2)` return per pound invested shows the power of grassroots football
+- We support `r safe_format(as.numeric(params$adult_players) + as.numeric(params$youth_players))` regular participants and `r safe_format(params$volunteers)` volunteers
+- Through Value F.C., we can now demonstrate our impact in terms that funders understand\
+
+# Social Media Content Suggestions
+
+1. "Every £1 invested in `r club_name` generates £`r safe_format(params$sroi, 2, 2)` in social value! That's healthier, happier communities through football 🙌⚽ #GrassrootsFootball #EssexFA"\
+
+2. "Our impact in numbers: 📈 £`r safe_format(params$net_value)` net social value 👥 `r safe_format(as.numeric(params$adult_players) + as.numeric(params$youth_players))` regular players 🤝 `r safe_format(params$volunteers)` amazing volunteers Building community through football! #ValueFC"\
+
+3. "More than just a football club… we're improving wellbeing, reducing pressure on the NHS, and supporting our local economy. See our social value story at [LINK] #CommunityFootball #SocialValue"
