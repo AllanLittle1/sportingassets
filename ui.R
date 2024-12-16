@@ -85,13 +85,12 @@ ui <- navbarPage(
                                   class = "sa-button"))
                  )))),
 
-  # CALCULATOR ------------------------------------------------------------------------------------------------------------------
+    # CALCULATOR ------------------------------------------------------------------------------------------------------------------
   tabPanel("Calculator", 
            fluidPage(
              theme = my_theme,
              tags$head(
                tags$style(HTML("
-        /* Background styling */
         .calculator-page {
           background: linear-gradient(rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.3)), 
                       url('gymnastics.jpg');
@@ -102,7 +101,6 @@ ui <- navbarPage(
           padding: 20px;
         }
         
-        /* Accordion styling */
         .accordion-container {
           max-width: 800px;
           margin: 0 auto;
@@ -111,39 +109,7 @@ ui <- navbarPage(
           backdrop-filter: blur(5px);
           padding: 20px;
         }
-        
-        .accordion-section {
-          border: 1px solid rgb(198, 163, 92);
-          border-radius: 8px;
-          margin-bottom: 15px;
-          overflow: hidden;
-        }
-        
-        .accordion-header {
-          background-color: var(--essex-blue);
-          color: white;
-          padding: 15px;
-          cursor: pointer;
-          transition: all 0.3s ease;
-        }
-        
-        .accordion-content {
-          padding: 20px;
-          background-color: rgba(255, 255, 255, 0.95);
-        }
-
-        .heading-container {
-          text-align: center;
-          margin-bottom: 20px;
-        }
-
-        .radio-buttons-centre {
-          text-align: center;
-          margin: 20px 0;
-        }
-      ")),
-               tags$script(src = "https://polyfill.io/v3/polyfill.min.js?features=es6"),
-               tags$script(src = "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js")
+      "))
              ),
              useShinyjs(),
              
@@ -153,56 +119,159 @@ ui <- navbarPage(
                      # Header
                      div(class = "heading-container",
                          div(style = "display: flex; justify-content: center; align-items: center; gap: 15px;",
-                             tags$img(src = "sa_logo.png", style = "height: 80px; width: auto;"),
                              h2("Value Calculator", style = "margin: 0;")
                          )
                      ),
                      
-                     # Accordion Sections
-                     # 1. About You
+                     # Project Information Section
                      div(class = "accordion-section",
-                         div(class = "accordion-header", "About You"),
+                         div(class = "accordion-header", "Project Information"),
                          div(class = "accordion-content",
-                             create_input_field("club_name", "Club Name:", 
-                                                textInput("club_name", "", placeholder = " ", width = '100%'),
-                                                "Enter the name of your club as you'd like it to appear in your report.")
+                             create_input_field("project_name", "Project Name:", 
+                                                textInput("project_name", "", 
+                                                          placeholder = "Enter project name", 
+                                                          value = "Sample Project",
+                                                          width = '100%'),
+                                                "Enter the name of your project as you'd like it to appear in your report."),
+                             
+                             create_input_field("activity_type", "Activity Type:", 
+                                                selectInput("activity_type", "", 
+                                                            choices = c("Adventure sports", "Bowls or boules", 
+                                                                        "Combat sports, martial arts or target sports", "Cycling for leisure and sport", 
+                                                                        "Equestrian", "Fitness class", "Football", "Gymnastics, trampolining or cheerleading", 
+                                                                        "Informal activity and active play", "Leisure activities and games", "Racket sports", 
+                                                                        "Swimming", "Walking for leisure", "Water sports", "Winter sports", "Team sports (other)"), 
+                                                            selected = "Football", width = '100%'), 
+                                                "Select the main type of activity at your facility.")
                          )
                      ),
                      
-                     # 2. Costs
+                     # Financial Information Section
                      div(class = "accordion-section",
-                         div(class = "accordion-header", "Costs"),
+                         div(class = "accordion-header", "Financial Information"),
                          div(class = "accordion-content",
-                             create_input_field("annual_expenditure", "Annual Expenditure (£):", 
-                                                numericInput("annual_expenditure", "", value = 0, min = 0, step = 1000, width = '100%'),
-                                                "Enter the total expenditure of your club over the last 12 months. Include all costs such as pitch hire, 
-              equipment, insurance, and any other operational expenses.")
+                             create_input_field("sa_loan", "Sporting Assets Loan (£):", 
+                                                numericInput("sa_loan", "", 
+                                                             value = 50000, min = 0, step = 1000, 
+                                                             width = '100%'),
+                                                "Enter the amount of loan funding received from Sporting Assets."),
+                             
+                             create_input_field("sa_grant", "Sporting Assets Grant (£):", 
+                                                numericInput("sa_grant", "", 
+                                                             value = 10000, min = 0, step = 1000, 
+                                                             width = '100%'),
+                                                "Enter the amount of grant funding received from Sporting Assets."),
+                             
+                             create_input_field("loan_repaid", "Loan Amount Repaid (£):", 
+                                                numericInput("loan_repaid", "", 
+                                                             value = 20000, min = 0, step = 1000, 
+                                                             width = '100%'),
+                                                "Enter the amount of loan funding repaid to date."),
+                             
+                             create_input_field("other_funding", "Other Funding (£):", 
+                                                numericInput("other_funding", "", 
+                                                             value = 100000, min = 0, step = 1000, 
+                                                             width = '100%'),
+                                                "Enter the total amount of other funding received for this project.")
                          )
                      ),
                      
-                     # 3. Participants
+                     # Participants Section (as before)
                      div(class = "accordion-section",
                          div(class = "accordion-header", "Participants"),
                          div(class = "accordion-content",
-                             create_input_field("adult_players", "Regular Players Aged Over 16:", 
-                                                numericInput("adult_players", "", value = 0, min = 0, step = 10, width = '100%'),
-                                                "Enter the number of regular adult players and any young players aged 16 plus."),
-                             create_input_field("youth_players", "Regular Players Aged Under 16:", 
-                                                numericInput("youth_players", "", value = 0, min = 0, step = 10, width = '100%'),
-                                                "Enter the number of regular children and young people aged under 16."),
+                             create_input_field("cyp_participants", "Children and Young People:", 
+                                                numericInput("cyp_participants", "", 
+                                                             value = 100, min = 0, step = 10, 
+                                                             width = '100%'),
+                                                "Enter the number of regular participants aged under 16."),
+                             
+                             create_input_field("adult_participants", "Adult Participants:", 
+                                                numericInput("adult_participants", "", 
+                                                             value = 50, min = 0, step = 10, 
+                                                             width = '100%'),
+                                                "Enter the number of regular participants aged 16 and over."),
+                             
                              create_input_field("volunteers", "Regular Volunteers:", 
-                                                numericInput("volunteers", "", value = 0, min = 0, step = 10, width = '100%'),
-                                                "Enter the number of regular volunteers who contributed to the club over the last 12 months."),
-                             div(style = "text-align: center; margin-top: 20px;",
-                                 actionBttn(inputId = "calculate_value", 
-                                            label = "Calculate Value", 
-                                            style = "unite", 
-                                            color = "primary", 
-                                            size = "md"))
+                                                numericInput("volunteers", "", 
+                                                             value = 20, min = 0, step = 5, 
+                                                             width = '100%'),
+                                                "Enter the number of regular volunteers who contributed over the last 12 months.")
                          )
                      ),
                      
-                     # 4. Results
+                     # New Additionality Section
+                     # Additionality Section with reordered elements
+                     div(class = "accordion-section",
+                         div(class = "accordion-header", "Additionality"),
+                         div(class = "accordion-content",
+                             # Help text
+                             div(
+                               style = "margin-bottom: 20px; padding: 15px; background-color: #f5f5f7; border-radius: 8px;",
+                               p("Additionality accounts for how many participants were already active before joining your project. 
+              The national averages show 63% of adults and 47% of young people are already meeting activity guidelines."),
+                               p("You can use your postcode to load local activity levels, or manually adjust the values based on your knowledge of participants.")
+                             ),
+                             
+                             # Local Area Override - moved to top
+                             div(style = "margin-bottom: 30px; padding: 15px; border: 1px solid #ddd; border-radius: 8px; background-color: white;",
+                                 h4("Local Area Activity Levels", style = "margin-top: 0;"),
+                                 div(style = "display: flex; align-items: flex-end; gap: 10px;",
+                                     div(style = "flex-grow: 1;",
+                                         create_input_field(
+                                           "postcode", 
+                                           "Postcode:", 
+                                           textInput("postcode", "", placeholder = "e.g., CM1 1QH", width = '100%'),
+                                           "Enter your facility's postcode to use local activity levels"
+                                         )
+                                     ),
+                                     div(
+                                       actionButton("load_local_data", "Load Local Data",
+                                                    class = "sa-button",
+                                                    style = "margin-bottom: 20px;")
+                                     )
+                                 ),
+                                 # Message area for postcode results
+                                 uiOutput("postcode_message")
+                             ),
+                             
+                             # Divider
+                             div(style = "margin: 20px 0; border-top: 1px solid #ddd;"),
+                             
+                             # Manual adjustment section
+                             h4("Manual Adjustment", style = "margin-top: 0;"),
+                             p("Adjust these values if you have better information about your participants' prior activity levels."),
+                             
+                             # Sliders for manual adjustment
+                             create_input_field(
+                               "cyp_additionality", 
+                               "Children and Young People Already Active:", 
+                               sliderInput("cyp_additionality", "", 
+                                           min = 0, max = 100, value = 47, step = 1,
+                                           post = "%", width = '100%'),
+                               "Percentage of your young participants who were already meeting activity guidelines"
+                             ),
+                             
+                             create_input_field(
+                               "adult_additionality", 
+                               "Adults Already Active:", 
+                               sliderInput("adult_additionality", "", 
+                                           min = 0, max = 100, value = 63, step = 1,
+                                           post = "%", width = '100%'),
+                               "Percentage of your adult participants who were already meeting activity guidelines"
+                             )
+                         )
+                     ),                     
+                     # Calculate button (moved from Participants to after Additionality)
+                     div(style = "text-align: center; margin-top: 20px;",
+                         actionBttn(inputId = "calculate_value", 
+                                    label = "Calculate Value", 
+                                    style = "unite", 
+                                    color = "primary", 
+                                    size = "md")
+                     ),
+                     
+                     # Results Section
                      div(class = "accordion-section",
                          div(class = "accordion-header", "Results"),
                          div(class = "accordion-content",
@@ -227,7 +296,7 @@ ui <- navbarPage(
                          )
                      ),
                      
-                     # 5. Visualizations
+                     # Visualizations Section
                      div(class = "accordion-section",
                          div(class = "accordion-header", "Visualizations"),
                          div(class = "accordion-content",
