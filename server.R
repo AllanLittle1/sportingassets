@@ -56,7 +56,7 @@
     # Initialize conversation history
     conversation_history <- list()
 
-# SERVER SET UP -------------------------------------------------------------------------------------------------------------------------
+    # SERVER  -------------------------------------------------------------------------------------------------------------------------
     server <- function(input, output, session) {
       
       # Tooltip ---------
@@ -97,44 +97,101 @@
         health_ratio = 315/2815,
         health_value = NULL,
         calculated = FALSE,
-        showAlert = FALSE
+        showAlert = FALSE,
+        
+        adult_additionality = 0.63,  # Default 63% already active
+        cyp_additionality = 0.47     # Default 47% already active
       )
+      
+      # Load Local Data button handler ----
+      observeEvent(input$load_local_data, {
+        print("Loading local data")
+        req(input$postcode)
+        
+        # Simulate API call (replace with actual API call later)
+        tryCatch({
+          random_variation <- runif(1, -0.1, 0.1)  # +/- 10%
+          local_adult_activity <- min(max(0.63 + random_variation, 0), 1)
+          local_cyp_activity <- min(max(0.47 + random_variation, 0), 1)
+          
+          print(paste("New adult activity:", local_adult_activity))
+          print(paste("New CYP activity:", local_cyp_activity))
+          
+          # Update slider values
+          updateSliderInput(session, "adult_additionality", 
+                            value = round(local_adult_activity * 100))
+          updateSliderInput(session, "cyp_additionality", 
+                            value = round(local_cyp_activity * 100))
+          
+          # Store in reactive values
+          rv$adult_additionality <- local_adult_activity
+          rv$cyp_additionality <- local_cyp_activity
+          
+          output$postcode_message <- renderUI({
+            div(class = "alert alert-success",
+                style = "margin-top: 15px; padding: 10px; border-radius: 4px;",
+                sprintf("Local activity levels loaded for %s: Adults %.0f%%, Young People %.0f%%", 
+                        toupper(input$postcode),
+                        local_adult_activity * 100,
+                        local_cyp_activity * 100))
+          })
+        }, error = function(e) {
+          print(paste("Error:", e$message))
+          output$postcode_message <- renderUI({
+            div(class = "alert alert-danger",
+                style = "margin-top: 15px; padding: 10px; border-radius: 4px;",
+                "Error loading local data. Please check postcode format.")
+          })
+        })
+      })
       
       # Observe inputs and reactive -----  
       observe({
-        input$adult_players
-        input$youth_players
+        input$adult_participants
+        input$youth_participants
         input$volunteers
-        input$annual_expenditure
+        input$sa_loan
+        input$sa_grant
+        input$loan_repaid
+        input$other_funding
         
         rv$calculated <- FALSE
         rv$showAlert <- FALSE
         output$calculated_value <- renderUI({NULL})
       })
       
-      # Calculations ----------------------------------------------------------------------------------------------------------------------------
+      # CALCS ----------------------------------------------------------------------------------------------------------------------------
       observeEvent(input$calculate_value, {
+        # Print inputs for debugging
+        print("Starting calculation")
         
         # Required inputs ---- 
-        req(input$adult_players, input$youth_players, input$volunteers, input$annual_expenditure)
+        req(input$cyp_participants, input$adult_participants, input$volunteers, 
+            input$sa_loan, input$sa_grant, input$loan_repaid, input$other_funding)
         
         # Convert inputs to numeric values ----
-        rv$adult_players <- as.numeric(input$adult_players)
-        rv$youth_players <- as.numeric(input$youth_players)
+        rv$adult_players <- as.numeric(input$adult_participants)
+        rv$youth_players <- as.numeric(input$cyp_participants)
         rv$volunteers <- as.numeric(input$volunteers)
-        rv$annual_expenditure <- as.numeric(input$annual_expenditure)
         
-        # Calculate economic values ----
+        # Calculate financial values ----
+        total_sa_investment <- as.numeric(input$sa_loan) + as.numeric(input$sa_grant) - as.numeric(input$loan_repaid)
+        total_investment <- total_sa_investment + as.numeric(input$other_funding)
+        rv$annual_expenditure <- total_investment  # This is what's used in later calculations
+        
+        # Calculate player spending
         rv$player_spending <- rv$adult_players * 122.36  # Non-club spending per player
         rv$total_spending <- rv$annual_expenditure + rv$player_spending
-        rv$economic_value <- rv$total_spending * 0.5     # 50% of total spending becomes GVA, includes additionality already 
+        rv$economic_value <- rv$total_spending * 0.5     # 50% of total spending becomes GVA
+        
+        print(paste("Total investment calculated:", rv$annual_expenditure))
         
         # Calculate replacement value ----
         rv$replacement_value_per_volunteer <- 12 * 9 * rv$living_wage 
         
         # Calculate wellby values ----
-        rv$wellby_adult <- rv$adult_players * rv$coeff_adult * rv$wellby_val * rv$additionality
-        rv$wellby_youth <- rv$youth_players * rv$coeff_youth * rv$wellby_val * rv$additionality
+        rv$wellby_adult <- rv$adult_players * rv$coeff_adult * rv$wellby_val * (1 - rv$adult_additionality)
+        rv$wellby_youth <- rv$youth_players * rv$coeff_youth * rv$wellby_val * (1 - rv$cyp_additionality)
         rv$wellby_volunteer <- rv$volunteers * rv$coeff_volunteer * rv$wellby_val * rv$additionality
         rv$replacement_value <- rv$volunteers * rv$replacement_value_per_volunteer
         
@@ -157,21 +214,17 @@
         rv$calculated_value <- return_value
         rv$calculated <- TRUE
         
-        # Determine club name text ----
-        club_name_text <- ifelse(nzchar(input$club_name), input$club_name, "Your club")
+        # Determine project name text ----
+        project_name_text <- ifelse(nzchar(input$project_name), input$project_name, "Your project")
         
         # Render UI with headline text -----
-        # Replace this section in server.R where calculated_value is rendered:
-        
         output$calculated_value <- renderUI({
           req(rv$adult_players, rv$youth_players, rv$volunteers, rv$annual_expenditure)
-          
-          club_name_text <- ifelse(nzchar(input$club_name), input$club_name, "Your club")
           
           div(style = "text-align: center; position: relative;",
               HTML(paste0(
                 '<div style="text-align: center; font-size: 24px; font-family: FS Jack, sans-serif; margin-bottom: 20px;">',
-                '<span style="font-weight: 700;">', club_name_text, '</span>',
+                '<span style="font-weight: 700;">', project_name_text, '</span>',
                 ' generates an estimated <span style="color: rgb(206, 50, 49); font-weight: 700;">£',
                 format(rv$sroi, nsmall = 2),
                 '</span> return for every <span style="color: rgb(18, 68, 135); font-weight: 700;">£1</span> invested.</div>',
@@ -195,6 +248,7 @@
         save_plot_images()
       })
       
+# PLOTS ------------------------------------------------------------------------------------------------------------------------------------ 
       save_plot_images <- function() {
         # Investment data remains unchanged
         investment_data <- data.frame(
@@ -384,7 +438,7 @@
                  margin = list(l = 50, r = 50, t = 50, b = 50))
       })
       
-      # AI  ----------------------------------------------------------------------------------------------------------------------
+# AI  ----------------------------------------------------------------------------------------------------------------------
       conversation_history_rv <- reactiveVal(list())
       
       # In server.R, update the chat_output renderUI:
@@ -479,7 +533,7 @@
       })
       
       
-      # REPORT -----------------------------------------------------------------------------------------------------------------------------
+# REPORT -----------------------------------------------------------------------------------------------------------------------------
       
       output$download_report <- downloadHandler(
         filename = function() {
@@ -514,7 +568,7 @@
         }
       )
       
-      # MEDIA PACK -----------------------------------------------------------------------------------------------------------------------------
+# MEDIA PACK -----------------------------------------------------------------------------------------------------------------------------
       
       output$download_media_pack <- downloadHandler(
         filename = function() {
@@ -543,39 +597,7 @@
         }
       )
       
-      # SLIDES ----------------------------------------------------------------
-      output$download_slides <- downloadHandler(
-        filename = function() {
-          club_name <- if (!is.null(input$club_name) && nzchar(input$club_name)) paste0(input$club_name, " - ") else ""
-          paste0(club_name, "Social Value Presentation ", Sys.Date(), ".pptx")
-        },
-        content = function(file) {
-          req(rv$adult_players, rv$youth_players, rv$volunteers, rv$annual_expenditure)
-          
-          params <- list(
-            club_name = input$club_name,
-            sroi = rv$sroi,
-            return = rv$return,
-            investment = rv$investment,
-            net_value = rv$net_value,
-            adult_players = rv$adult_players,
-            youth_players = rv$youth_players,
-            volunteers = rv$volunteers,
-            wellby_adult = rv$wellby_adult,
-            wellby_youth = rv$wellby_youth,
-            wellby_volunteer = rv$wellby_volunteer,
-            replacement_value = rv$replacement_value,
-            economic_value = rv$economic_value,
-            player_spending = rv$player_spending,
-            health_value = rv$health_value,
-            wellby_val = rv$wellby_val
-          )
-          
-          rmarkdown::render("club_slides.Rmd", output_file = file, params = params, envir = new.env(parent = globalenv()))
-        }
-      )     
-      
-      # CSV ---------------------------------------------------------------------
+# CSV ---------------------------------------------------------------------
       output$download_csv <- downloadHandler(
         filename = function() {
           club_name <- if (!is.null(input$club_name) && nzchar(input$club_name)) paste0(input$club_name, " - ") else ""
@@ -722,5 +744,5 @@
         }
       ) 
       
-      # END SERVER ------------------------------------------------------------------------------------------------------------------------
+# END SERVER ------------------------------------------------------------------------------------------------------------------------
     }
